@@ -29,6 +29,8 @@ def convert_mp3_to_wav(filename, sample_frequency):
     cmd = 'lame -a -m m {0} {1}'.format(quote(filename), quote(filename_tmp))
     os.system(cmd)
     cmd = 'lame --decode {0} {1} --resample {2}'.format(quote(filename_tmp), quote(new_name), sample_freq_str)
+    print(cmd)
+    # lame --decode ./datasets/YourMusicLibrary/tmp/Test.mp3 ./datasets/YourMusicLibrary/wave/Test.wav --resample 44.1
     os.system(cmd)
     return new_name
 
@@ -82,10 +84,10 @@ def convert_np_audio_to_sample_blocks(song_np, block_size):
     block_lists = []
     total_samples = song_np.shape[0]
     num_samples_so_far = 0
-    while (num_samples_so_far < total_samples):
+    while num_samples_so_far < total_samples:
         block = song_np[num_samples_so_far:num_samples_so_far + block_size]
-        if (block.shape[0] < block_size):
-            padding = np.zeros((block_size - block.shape[0],))
+        if block.shape[0] < block_size:
+            padding = np.zeros((block_size - block.shape[0], 2))
             block = np.concatenate((block, padding))
         block_lists.append(block)
         num_samples_so_far += block_size
@@ -150,8 +152,11 @@ def convert_wav_files_to_nptensor(directory, block_size, max_seq_len, out_file, 
     y_data = np.zeros(out_shape)
     for n in range(num_examples):
         for i in range(max_seq_len):
-            x_data[n][i] = chunks_X[n][i]
-            y_data[n][i] = chunks_Y[n][i]
+            # x_data[n][i] = chunks_X[n][i]
+            # y_data[n][i] = chunks_Y[n][i]
+            # columnだけ抽出
+            x_data[n][i] = chunks_X[n][i][:, 0]
+            y_data[n][i] = chunks_Y[n][i][:, 0]
         print('Saved example ', (n + 1), ' / ', num_examples)
     print('Flushing to disk...')
     mean_x = np.mean(np.mean(x_data, axis=0), axis=0)  # Mean across num examples and num timesteps
@@ -167,6 +172,10 @@ def convert_wav_files_to_nptensor(directory, block_size, max_seq_len, out_file, 
     np.save(out_file + '_var', std_x)
     np.save(out_file + '_x', x_data)
     np.save(out_file + '_y', y_data)
+    np.savetxt(out_file + '_mean.csv', mean_x, delimiter=",")
+    np.savetxt(out_file + '_var.csv', std_x, delimiter=",")
+    # np.savetxt(out_file + '_x.csv', x_data, delimiter=",")
+    # np.savetxt(out_file + '_y.csv', y_data, delimiter=",")
     print('Done!')
 
 
