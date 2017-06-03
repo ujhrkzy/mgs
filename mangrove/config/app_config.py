@@ -26,7 +26,7 @@ class AppConfig(object):
     # 2 ^ 15 - 1
     normalize_value = 32767.0
     # data shape = (num_examples, max_seq_len, num_dims_out)
-    output_sequence_length = 40
+    output_sequence_length = 100
 
     _mp3_extension = ".mp3"
     _wave_extension = ".wav"

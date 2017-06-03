@@ -137,7 +137,7 @@ class Conductor(object):
         return int(tmp)
 
     def _get_latest_weights_file_path(self) -> str:
-        files = glob.glob(os.path.join(self._config.weight_file_directory, "*"))
+        files = glob.glob(os.path.join(self._config.weight_file_directory, "*.h5"))
         if is_empty_collection(files):
             return None
         files = [file for file in files if os.path.isfile(file)]
