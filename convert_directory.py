@@ -14,4 +14,5 @@ max_seq_len = int(round((freq * clip_len) / block_size))  # Used later for zero-
 # print(new_directory)
 new_directory = "./datasets/YourMusicLibrary/wave/"
 # Step 2 - convert WAVs to frequency domain with mean 0 and standard deviation of 1
+# bolock_size = 11025, max_seq_len = 40
 convert_wav_files_to_nptensor(new_directory, block_size, max_seq_len, output_filename)

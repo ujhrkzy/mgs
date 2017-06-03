@@ -43,7 +43,7 @@ def convert_flac_to_wav(filename, sample_frequency):
     orig_filename = files[-1][0:-5]
     orig_path = filename[0:-len(files[-1])]
     new_path = ''
-    if (filename[0] == '/'):
+    if filename[0] == '/':
         new_path = '/'
     for i in range(len(files) - 1):
         new_path += files[i] + '/'
@@ -120,7 +120,7 @@ def fft_blocks_to_time_blocks(blocks_ft_domain):
     return time_blocks
 
 
-def convert_wav_files_to_nptensor(directory, block_size, max_seq_len, out_file, max_files=20, useTimeDomain=False):
+def convert_wav_files_to_nptensor(directory, block_size, max_seq_len, out_file, max_files=20, useTimeDomain=True):
     files = []
     for file in os.listdir(directory):
         if file.endswith('.wav'):
@@ -179,7 +179,7 @@ def convert_wav_files_to_nptensor(directory, block_size, max_seq_len, out_file, 
     print('Done!')
 
 
-def convert_nptensor_to_wav_files(tensor, indices, filename, useTimeDomain=False):
+def convert_nptensor_to_wav_files(tensor, indices, filename, useTimeDomain=True):
     num_seqs = tensor.shape[1]
     for i in indices:
         chunks = []
@@ -188,7 +188,7 @@ def convert_nptensor_to_wav_files(tensor, indices, filename, useTimeDomain=False
         save_generated_example(filename + str(i) + '.wav', chunks, useTimeDomain=useTimeDomain)
 
 
-def load_training_example(filename, block_size=2048, useTimeDomain=False):
+def load_training_example(filename, block_size=2048, useTimeDomain=True):
     data, bitrate = read_wav_as_np(filename)
     x_t = convert_np_audio_to_sample_blocks(data, block_size)
     y_t = x_t[1:]
@@ -200,7 +200,7 @@ def load_training_example(filename, block_size=2048, useTimeDomain=False):
     return X, Y
 
 
-def save_generated_example(filename, generated_sequence, useTimeDomain=False, sample_frequency=44100):
+def save_generated_example(filename, generated_sequence, useTimeDomain=True, sample_frequency=44100):
     if useTimeDomain:
         time_blocks = generated_sequence
     else:

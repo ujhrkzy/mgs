@@ -13,6 +13,7 @@ sample_frequency = config['sampling_frequency']
 inputFile = config['model_file']
 model_basename = config['model_basename']
 cur_iter = 25
+cur_iter = 50
 model_filename = model_basename + str(cur_iter)
 output_filename = './generated_song.wav'
 
@@ -54,7 +55,8 @@ print('Starting generation!')
 seed_len = 1
 seed_seq = seed_generator.generate_copy_seed_sequence(seed_length=seed_len, training_data=X_train)
 
-max_seq_len = 10;  # Defines how long the final song is. Total song length in samples = max_seq_len * example_len
+max_seq_len = 10 # Defines how long the final song is. Total song length in samples = max_seq_len * example_len
+max_seq_len = 40
 output = sequence_generator.generate_from_seed(model=model, seed=seed_seq,
                                                sequence_length=max_seq_len, data_variance=X_var, data_mean=X_mean)
 print('Finished generation!')

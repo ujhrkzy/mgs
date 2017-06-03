@@ -11,7 +11,7 @@ def generate_from_seed(model, seed, sequence_length, data_variance, data_mean):
     # Step 2 - Concatenate X_n + 1 onto A
     # Step 3 - Repeat MAX_SEQ_LEN times
     for it in range(sequence_length):
-        seedSeqNew = model._predict(seedSeq)  # Step 1. Generate X_n + 1
+        seedSeqNew = model.predict(seedSeq, batch_size=5, verbose=0)  # Step 1. Generate X_n + 1
         # Step 2. Append it to the sequence
         if it == 0:
             for i in range(seedSeqNew.shape[1]):
@@ -21,6 +21,12 @@ def generate_from_seed(model, seed, sequence_length, data_variance, data_mean):
         newSeq = seedSeqNew[0][seedSeqNew.shape[1] - 1]
         newSeq = np.reshape(newSeq, (1, 1, newSeq.shape[0]))
         seedSeq = np.concatenate((seedSeq, newSeq), axis=1)
+        # remove first data
+        # axis=1 の 0番目を削除
+        # seedSeq.shape = 1,41,11050 を
+        # seedSeq.shape = 1,40,11050 に変更
+        seedSeq = np.delete(seedSeq, 0, 1)
+
 
     # Finally, post-process the generated sequence so that we have valid frequencies
     # We're essentially just undo-ing the data centering process

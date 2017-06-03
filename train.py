@@ -13,6 +13,8 @@ model_filename = model_basename + str(cur_iter)
 
 # Load up the training data
 print('Loading training data')
+# 19, 40, 11025(useTimeDomain=False -> 22050)
+# X_train is a tensor of size (num_train_examples, sequence_length, block_size)
 # X_train is a tensor of size (num_train_examples, num_timesteps, num_frequency_dims)
 # y_train is a tensor of size (num_train_examples, num_timesteps, num_frequency_dims)
 X_train = np.load(inputFile + '_x.npy')
