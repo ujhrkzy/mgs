@@ -30,6 +30,6 @@ class Main():
 
 if __name__ == "__main__":
     main = Main()
-    main.generate_training_data()
+    # main.generate_training_data()
     # main.train()
-    # main.generate_music()
+    main.generate_music()

@@ -4,6 +4,7 @@ from app.application_context import context
 from models.wave import MusicDataConverter
 from util.logging.logging import logger
 from models.music_tensor import MusicTensor
+import itertools
 
 __author__ = "ujihirokazuya"
 __date__ = "2017/05/14"
@@ -16,7 +17,6 @@ class TrainingDataGenerator(object):
         self._converter = MusicDataConverter()
 
     def generate(self):
-        # TODO lame コマンドの確認
         # self._create_wave_files()
 
         max_sequence_length = self._config.max_sequence_length
@@ -37,15 +37,14 @@ class TrainingDataGenerator(object):
         out_shape = (num_examples, max_sequence_length, num_dims_out)
         x_data = np.zeros(out_shape)
         y_data = np.zeros(out_shape)
-        for n in range(num_examples):
-            for i in range(max_sequence_length):
-                # x_data[n][i] = chunks_X[n][i]
-                # y_data[n][i] = chunks_Y[n][i]
-                # [:, 0]は[row:column]の内、すべての行の0列目を取得
-                # columnだけ抽出
-                # TODO 確認 -> ステレオだと [][][2列]になっている。片側だけ取得している。
-                x_data[n][i] = chunks_x[n][i][:, 0]
-                y_data[n][i] = chunks_y[n][i][:, 0]
+        for example_index, sequence_index in itertools.product(range(num_examples), range(max_sequence_length)):
+            x_data[example_index][sequence_index] = chunks_x[example_index][sequence_index]
+            y_data[example_index][sequence_index] = chunks_y[example_index][sequence_index]
+            # TODO ステレオ対応。 [][][2列]になっている。
+            # [:, 0]は[row:column]の内、すべての行の0列目を取得
+            # columnだけ抽出
+            # x_data[example_index][sequence_index] = chunks_x[example_index][sequence_index][:, 0]
+            # y_data[example_index][sequence_index] = chunks_y[example_index][sequence_index][:, 0]
         music_tensor_x = MusicTensor(tensor=x_data, normalize_enable=True)
         music_tensor_y = MusicTensor(tensor=y_data, normalize_enable=False)
         music_tensor_y.normalize(music_tensor_x)

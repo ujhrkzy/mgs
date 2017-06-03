@@ -42,9 +42,9 @@ class MusicDataConverter(object):
     def convert_mp3_to_wav(self, org_mp3_file_path, mono_mp3_file_path, wave_file_path):
         sample_freq_str = "{0:.1f}".format(float(self._sampling_frequency) / 1000.0)
         # TODO monaural or stereo どちらが良いか確認する
-        # cmd = 'lame -a -m m {0} {1}'.format(quote(org_mp3_file_path), quote(mono_mp3_file_path))
-        # logger.info("lame monaural cmd:" + cmd)
-        # os.system(cmd)
+        cmd = 'lame -a -m m {0} {1}'.format(quote(org_mp3_file_path), quote(mono_mp3_file_path))
+        logger.info("lame monaural cmd:" + cmd)
+        os.system(cmd)
         cmd = 'lame --decode {0} {1} --resample {2}'.format(quote(mono_mp3_file_path),
                                                             quote(wave_file_path),
                                                             sample_freq_str)
@@ -69,7 +69,6 @@ class MusicDataConverter(object):
 
     def _read_wav_as_np(self, filename):
         data = wav.read(filename)
-        # TODO 確認 data.shape = (xxxx, 2) のはずが (xxxx, 0) になっている。
         np_arr = data[1].astype('float32') / self._normalize_value
         # np_arr = np.array(np_arr)
         return np_arr, data[0]
@@ -87,8 +86,8 @@ class MusicDataConverter(object):
         while current_sample_number < total_sample_number:
             block = music_data[current_sample_number:current_sample_number + block_size]
             if block.shape[0] < block_size:
-                # TODO 確認 -> ステレオだと [][][2列]になっている。モノラルなら2を1にする。
-                padding = np.zeros((block_size - block.shape[0], 2))
+                # TODO ステレオ対応（ステレオの場合、[][][2列]になっているので (block_size - shape[0], 2)となる）
+                padding = np.zeros((block_size - block.shape[0],))
                 block = np.concatenate((block, padding))
             block_lists.append(block)
             current_sample_number += block_size

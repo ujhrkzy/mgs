@@ -13,6 +13,11 @@ __pycache__/
 .eggs
 UNKNOWN.egg-info
 *.log
+*.h5
+*.mp3
+*.wav
+*.npy
+*.csv
 
 .idea/workspace.xml
 .idea/inspectionProfiles/profiles_settings.xml

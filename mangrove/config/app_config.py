@@ -21,7 +21,6 @@ class AppConfig(object):
     block_size = int(sampling_frequency / 4)
     # Used later for zero-padding song sequences
     max_sequence_length = int(round((sampling_frequency * clip_length) / block_size))
-    new_directory = "./datasets/YourMusicLibrary/wave/"
     fft_enable = False
     # normalize 16-bit input to [-1, 1] range
     # 2 ^ 15 - 1
@@ -52,7 +51,7 @@ class AppConfig(object):
     # Number of hidden dimensions.
     # For best results, this should be >= freq_space_dims.
     hidden_dimension_size = 1024
-    recurrent_unit_size = 2
+    recurrent_unit_size = 3
 
     weight_file_directory = os.path.join(path, "results/weights")
     output_music_file_directory = os.path.join(path, "results/music")

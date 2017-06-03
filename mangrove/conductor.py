@@ -13,6 +13,7 @@ from numpy import ndarray
 from keras.models import Sequential
 from models.music_tensor import MusicTensor
 from datetime import datetime
+from config.app_config import AppConfig
 
 __author__ = "ujihirokazuya"
 __date__ = "2017/05/14"
@@ -41,7 +42,11 @@ class Conductor(object):
     _music_file_pattern = "{}_epoch_{}.wav"
 
     def __init__(self):
-        self._config = context.config
+        self.__config = context.config
+
+    @property
+    def _config(self) -> AppConfig:
+        return self.__config
 
     def generate_music(self):
         x_train = np.load(self._config.x_npy)
@@ -78,8 +83,7 @@ class Conductor(object):
         for i in range(self._config.output_sequence_length):
             new_seed_sequence = nn_model.predict(seed_sequence, batch_size=self._config.batch_size, verbose=0)
             if i == 0:
-                # TODO 確認
-                output = [new_seed.copy() for new_seed in new_seed_sequence[0]]
+                output.extend([new_seed.copy() for new_seed in new_seed_sequence[0]])
             else:
                 output.append(new_seed_sequence[0][-1].copy())
             new_sequence = new_seed_sequence[0][-1]
