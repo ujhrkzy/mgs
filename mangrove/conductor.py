@@ -49,7 +49,7 @@ class Conductor(object):
         return self.__config
 
     def generate_music(self):
-        x_train = np.load(self._config.x_npy)
+        x_train = np.load(self._config.seed_x_npy)
 
         weights_file_path = self._get_latest_weights_file_path()
         if is_empty(weights_file_path):
@@ -84,6 +84,7 @@ class Conductor(object):
             new_seed_sequence = nn_model.predict(seed_sequence, batch_size=self._config.batch_size, verbose=0)
             if i == 0:
                 output.extend([new_seed.copy() for new_seed in new_seed_sequence[0]])
+                # print("")
             else:
                 output.append(new_seed_sequence[0][-1].copy())
             new_sequence = new_seed_sequence[0][-1]
