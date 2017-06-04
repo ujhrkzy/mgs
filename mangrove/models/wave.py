@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import scipy.io.wavfile as wav
-import numpy as np
 from app.application_context import context
 from numpy import ndarray
 import os
@@ -8,6 +6,7 @@ import scipy.io.wavfile as wav
 import numpy as np
 from pipes import quote
 from util.logging.logging import logger
+import subprocess
 
 __author__ = "ujihirokazuya"
 __date__ = "2017/05/14"
@@ -43,14 +42,18 @@ class MusicDataConverter(object):
         sample_freq_str = "{0:.1f}".format(float(self._sampling_frequency) / 1000.0)
         # TODO monaural or stereo どちらが良いか確認する
         cmd = 'lame -a -m m {0} {1}'.format(quote(org_mp3_file_path), quote(mono_mp3_file_path))
-        logger.info("lame monaural cmd:" + cmd)
-        os.system(cmd)
+        # logger.info("lame monaural cmd: {}".format(cmd))
+        logger.info("{}".format(cmd))
+        cmds = cmd.split(" ")
+        # subprocess.call(cmds, shell=True)
         cmd = 'lame --decode {0} {1} --resample {2}'.format(quote(mono_mp3_file_path),
                                                             quote(wave_file_path),
                                                             sample_freq_str)
         # lame --decode /path/to/mp3 /path/to/wave --resample 44.1
-        logger.info("lame decode cmd:" + cmd)
-        os.system(cmd)
+        # logger.info("lame decode cmd: {}".format(cmd))
+        logger.info("{}".format(cmd))
+        cmds = cmd.split(" ")
+        # subprocess.call(cmds, shell=True)
 
     def load_training_data(self, file_path) -> TrainingData:
         music_data, bit_rate = self._read_wav_as_np(file_path)
@@ -88,6 +91,7 @@ class MusicDataConverter(object):
             if block.shape[0] < block_size:
                 # TODO ステレオ対応（ステレオの場合、[][][2列]になっているので (block_size - shape[0], 2)となる）
                 padding = np.zeros((block_size - block.shape[0],))
+                # padding = np.zeros((block_size - block.shape[0], 2))
                 block = np.concatenate((block, padding))
             block_lists.append(block)
             current_sample_number += block_size
