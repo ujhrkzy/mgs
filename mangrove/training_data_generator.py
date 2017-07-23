@@ -16,9 +16,10 @@ class TrainingDataGenerator(object):
         self._config = context.config
         self._converter = MusicDataConverter()
 
-    def generate(self):
-        # self._create_wave_files()
+    def create_wave_files(self):
+        self._create_wave_files()
 
+    def generate(self):
         max_sequence_length = self._config.max_sequence_length
         chunks_x, chunks_y = self._load_training_data(max_sequence_length=max_sequence_length)
         music_tensor_x, music_tensor_y = self._create_music_tensor(max_sequence_length=max_sequence_length,

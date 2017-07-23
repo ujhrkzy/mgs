@@ -80,6 +80,7 @@ class Conductor(object):
     def _generate_music_from_seed(self, nn_model: Sequential, seed: ndarray) -> list:
         seed_sequence = seed.copy()
         output = []
+        output.extend([new_seed.copy() for new_seed in seed[0]])
         for i in range(self._config.output_sequence_length):
             new_seed_sequence = nn_model.predict(seed_sequence, batch_size=self._config.batch_size, verbose=0)
             if i == 0:
@@ -121,7 +122,7 @@ class Conductor(object):
         while current_epoch < epoch_size:
             logger.info('current epoch: ' + str(current_epoch))
             history = LossHistory()
-            nn_model.fit(x_train, y_train, batch_size=self._config.batch_size, nb_epoch=nb_epoch, verbose=1,
+            nn_model.fit(x_train, y_train, batch_size=self._config.batch_size, nb_epoch=nb_epoch, verbose=0,
                          validation_split=0.0, callbacks=[history])
             logger.info(history.losses)
             current_epoch += nb_epoch

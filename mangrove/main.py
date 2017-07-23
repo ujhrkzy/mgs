@@ -15,6 +15,7 @@ class Main():
     @staticmethod
     def generate_training_data():
         generator = TrainingDataGenerator()
+        # generator.create_wave_files()
         generator.generate()
 
     @staticmethod
